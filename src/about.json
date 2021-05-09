@@ -1,0 +1,41 @@
+{
+    "applicationName": "Web Based Notepad",
+    "author": "181111218|Kevin|MW-B-Sore|STMIK MIKROSKIL",
+    "implementation": [
+        {
+            "id": "M01",
+            "topic": "HTTP Server",
+            "description": "Tidak diterapkan lagi karena telah menggunakan expressJS"
+        },
+        {
+            "id": "M02",
+            "topic": "Module File System",
+            "description": "Pada bagian About, membaca about aplikasi dari file JSON dan menampilkan dalam bentuk HTML"
+        },
+        {
+            "id": "M03",
+            "topic": "NPM dan expressJS",
+            "description": "Projek ini menerapkan NPM untuk penginstallan library dan ExpressJS untuk web server"
+        },
+        {
+            "id": "M04",
+            "topic": "Routing",
+            "description": "Penerapan Routing di aplikasi ini"
+        },
+        {
+            "id": "M05",
+            "topic": "Query dan Param",
+            "description": "Sudah diimplementasikan pada Controller Note pada method Index, dimana query itu digunakan untuk menentukan jenis sort apakah secara ASC atau DESC"
+        },
+        {
+            "id": "M06",
+            "topic": "Middleware",
+            "description": "Sudah menetapkan middleware contohnya pada saat sebelum mengakses controller Note telah dilakukan pengecekan login sebelum melanjut ke aksi selanjutnya"
+        },
+        {
+            "id": "M07",
+            "topic": "Database",
+            "description": "Projek ini sudah menggunakan database PostgreSQL 10.15 dan berjalan baik di Ubuntu. Untuk topik database, dibantu dengan library Sequelize untuk menggunakan teknik ORM"
+        }
+    ]
+}

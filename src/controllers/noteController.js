@@ -4,11 +4,28 @@ const Note = database.Note;
 const noteController = {
     index: async (req, res) => {
         try{
-            const notes = await Note.findAll({
-                where: {
-                    userId: req.user.id
-                }
-            });
+            let notes = [] ;
+
+            if (req.query.sort == "asc"){
+                notes = await Note.findAll({
+                    where: {
+                        userId: req.user.id
+                    },
+                    order: [
+                        ['id']
+                    ],
+                });
+            }
+            else{
+                notes = await Note.findAll({
+                    where: {
+                        userId: req.user.id
+                    },
+                    order: [
+                        ['id', 'DESC']
+                    ],
+                });
+            }
     
             res.status(200).send(notes);
         } catch (error){
@@ -16,23 +33,35 @@ const noteController = {
         }
     },
     show: async (req, res) => {
-        try{
-            const note = await Note.findOne({
-                where: {
-                    id: req.params.id
+        if (await checkRecord(req.user.id, req.params.id)){
+            try{
+                const note = await Note.findOne({
+                    where: {
+                        id: req.params.id
+                    }
+                });
+    
+                if (note){
+                    res.status(200).send(note);
                 }
-            });
-            res.status(200).send(note);
-        } catch (error){
-            res.status(500).send(error);
+                else{
+                    res.status(404).send({error: "Note tidak ditemukan !"});
+                }
+                
+            } catch (error){
+                res.status(500).send(error);
+            }
+        }
+        else{
+            res.status(403).send({error: "Anda tidak berhak mengakses Note ini !"});
         }
     },
     create: async (req, res) => {
         if (req.body.title.toString().length > 0 && req.body.body.toString().length > 0){
             try{
-                const note = await Note.build(req.body);
+                const note = Note.build(req.body);
                 note.userId = req.user.id;
-                note.save();
+                await note.save();
 
                 res.status(201).send(note);
             } catch(error){
@@ -44,39 +73,75 @@ const noteController = {
         }
     },
     update: async (req, res) => {
-        try{
-            const note = await Note.update(req.body, {
-                where: {
-                    id: req.params.id,
-                    userId: req.user.id
+        if (await checkRecord(req.user.id, req.params.id)){
+            try{
+                const update = await Note.update(req.body, {
+                    where: {
+                        id: req.params.id,
+                        userId: req.user.id
+                    }
+                });
+    
+                const note = await Note.findOne({
+                    where: {
+                        id: req.params.id
+                    }
+                });
+                
+                
+                if (note){
+                    res.status(200).send(note);
                 }
-            });
-            
-            if (note){
-                res.status(204).send(note);
+                else{
+                    res.status(200).send({error: 'Note tidak ditemukan !'});
+                }
+    
+            } catch(error){
+                res.status(500).send(error);
             }
-            else{
-                res.status(204).send({error: 'Note tidak ditemukan !'});
-            }
-
-        } catch(error){
-            res.status(500).send(error);
         }
-        
+        else{
+            res.status(403).send({error: "Anda tidak berhak mengakses Note ini !"});
+        }
     },
     destroy: async (req, res) => {
-        try{
-            Note.destroy({
-                where: {
-                    id: req.body.id
+        if (await checkRecord(req.user.id, req.params.id)){
+            try{
+                const note = await Note.destroy({
+                    where: {
+                        id: req.params.id
+                    }
+                });
+    
+                if (note){
+                    res.status(200).send({message: 'Note berhasil dihapus !'});
                 }
-            });
-            res.status(204).send({message: 'Note berhasil dihapus !'});
-        } catch(error){
-            res.status(500).send(error);
+                else{
+                    res.status(404).send({error: 'Note tidak ditemukan !'});
+                }
+            } catch(error){
+                res.status(500).send(error);
+            }
+        }
+        else{
+            res.status(403).send({error: "Anda tidak berhak mengakses Note ini !"});
         }
     }
+}
 
+const checkRecord = async (userId, noteId) => {
+    const note = await Note.findOne({
+        where: {
+            id: noteId
+        }
+    });
+
+    if (note){
+        return (userId === note.userId);
+    } else{
+        return false;
+    }
+    
 }
 
 module.exports = noteController;
