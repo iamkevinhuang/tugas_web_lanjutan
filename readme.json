@@ -10,7 +10,7 @@
         {
             "id": "M02",
             "topic": "Module File System",
-            "description": "Pada bagian About, membaca about aplikasi dari file JSON dan menampilkan dalam bentuk HTML"
+            "description": "Pada bagian About, membaca about aplikasi dari file about.json dan mengembalikan isi file tersebut dalam bentuk format JSON"
         },
         {
             "id": "M03",
